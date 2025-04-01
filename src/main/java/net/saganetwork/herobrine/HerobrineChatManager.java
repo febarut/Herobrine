@@ -46,6 +46,6 @@ public class HerobrineChatManager {
 
                 Bukkit.getLogger().info("<Herobrine> " + msg);
             }
-        }.runTaskTimer(plugin, 20L * 10, 20L * 60 * 5); // ⏱️ İlk 10sn sonra her 5dk
+        }.runTaskTimer(plugin, 20L * 10, 20L * 60 * 5);
     }
 }
