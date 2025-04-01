@@ -1,0 +1,4 @@
+name: Herobrine
+version: '1.0'
+main: net.saganetwork.herobrine.Herobrine
+api-version: '1.21'
