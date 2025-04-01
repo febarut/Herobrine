@@ -1,7 +1,6 @@
 package net.saganetwork.herobrine;
 
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -27,11 +26,26 @@ public class HerobrineChatManager {
             @Override
             public void run() {
                 String msg = messages.get(random.nextInt(messages.size()));
+                String formatted = "<Herobrine> " + msg;
+
                 for (Player player : Bukkit.getOnlinePlayers()) {
-                    player.sendMessage("<Herobrine> " + msg);
+                    player.sendMessage(formatted);
+
+                    Location baseLoc = player.getLocation();
+                    World world = baseLoc.getWorld();
+
+                    int offsetX = random.nextInt(11) - 5; // -5 ile +5 arası
+                    int offsetZ = random.nextInt(11) - 5;
+
+                    Location strikeLoc = baseLoc.clone().add(offsetX, 0, offsetZ);
+                    strikeLoc.setY(world.getHighestBlockYAt(strikeLoc));
+
+                    world.strikeLightningEffect(strikeLoc);
+                    player.playSound(player.getLocation(), Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 1f, 1f);
                 }
+
                 Bukkit.getLogger().info("<Herobrine> " + msg);
             }
-        }.runTaskTimer(plugin, 20L * 10, 20L * 120); // ilk 10s sonra her 2dk
+        }.runTaskTimer(plugin, 20L * 10, 20L * 60 * 5); // ⏱️ İlk 10sn sonra her 5dk
     }
 }

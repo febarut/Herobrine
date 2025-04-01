@@ -13,7 +13,7 @@ public class Herobrine extends JavaPlugin {
             for (Player player : Bukkit.getOnlinePlayers()) {
                 HerobrineManager.spawnHerobrineNpc(player, this);
             }
-        }, 0L, 20L * 60 * 10); // 10 dakika
+        }, 0L, 20L * 10 * 10); // 1 dakika
 
         HerobrineChatManager.start(this);
 

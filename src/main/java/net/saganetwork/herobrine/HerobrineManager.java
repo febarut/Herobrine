@@ -6,6 +6,8 @@ import de.oliver.fancynpcs.api.NpcData;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
@@ -15,28 +17,28 @@ public class HerobrineManager {
     private static final Map<UUID, String> activeNpcs = new HashMap<>();
     private static final Random random = new Random();
 
-
-
     public static void spawnHerobrineNpc(Player player, Plugin plugin) {
         Location spawnLoc = getHighestNearby(player, 10);
         if (spawnLoc == null) return;
 
         String npcId = "herobrine_" + player.getUniqueId().toString().substring(0, 8);
 
-        // Önceki NPC varsa sil
+        // Önceki Herobrine NPC varsa kaldır
         Npc old = FancyNpcsPlugin.get().getNpcManager().getNpc(npcId);
         if (old != null) {
             old.removeForAll();
             FancyNpcsPlugin.get().getNpcManager().removeNpc(old);
         }
 
+        // Oyuncuya baktır
         Location targetLoc = player.getLocation();
         float yaw = getYawTowards(spawnLoc, targetLoc);
         spawnLoc.setYaw(yaw);
 
+        // NPC oluştur
         NpcData data = new NpcData(npcId, player.getUniqueId(), spawnLoc);
         data.setSkin("MHF_Herobrine");
-        data.setDisplayName("");
+        data.setDisplayName(""); // İsim gizli
 
         Npc npc = FancyNpcsPlugin.get().getNpcAdapter().apply(data);
         FancyNpcsPlugin.get().getNpcManager().registerNpc(npc);
@@ -55,6 +57,9 @@ public class HerobrineManager {
 
                 Location npcLoc = npc.getData().getLocation();
                 if (npcLoc.distance(player.getLocation()) <= 5) {
+                    player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20 * 4, 1));
+                    player.playSound(player.getLocation(), Sound.ENTITY_WITHER_SPAWN, 1f, 0.6f);
+
                     npc.removeForAll();
                     FancyNpcsPlugin.get().getNpcManager().removeNpc(npc);
                     cancel();
@@ -92,6 +97,4 @@ public class HerobrineManager {
         double dz = to.getZ() - from.getZ();
         return (float) Math.toDegrees(Math.atan2(-dx, dz));
     }
-
-
 }
